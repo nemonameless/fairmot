@@ -601,6 +601,6 @@ def get_pose_net(num_layers, heads, head_conv=128, down_ratio=4, trt=False):
                  last_level=4,
                  head_conv=head_conv,
                  trt = trt)
-  total_params = sum(p.numel() for p in model.parameters())
-  print( "Parameters=", total_params )  
-  return model
+    total_params = sum(p.numel() for p in model.parameters())
+    print( "Parameters=", total_params )  
+    return model

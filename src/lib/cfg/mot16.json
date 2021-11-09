@@ -2,14 +2,14 @@
     "root":"./dataset/mot",
     "train":
     {
-        "mot17":"./data/mot16.train"
+        "mot17":"./dataset/mot/image_lists/mot16.train"
     },
     "test_emb":
     {
-        "mot17":"./data/mot16.train"
+        "mot17":"./dataset/mot/image_lists/mot16.train"
     },
     "test":
     {
-        "mot17":"./data/mot16.train"
+        "mot17":"./dataset/mot/image_lists/mot16.train"
     }
 }

@@ -12,11 +12,9 @@ class opts(object):
     # basic experiment setting
     self.parser.add_argument('task', default='mot', help='mot')
     self.parser.add_argument('--dataset', default='jde', help='jde')
-    self.parser.add_argument('--exp_id', default='default')
+    self.parser.add_argument('--exp_id', default='fairmot')
     self.parser.add_argument('--test', action='store_true')
-    #self.parser.add_argument('--load_model', default='../models/ctdet_coco_dla_2x.pth',
-                             #help='path to pretrained model')
-    self.parser.add_argument('--load_model', default='',
+    self.parser.add_argument('--load_model', default='../models/ctdet_coco_dla_2x.pth',
                              help='path to pretrained model')
     self.parser.add_argument('--resume', action='store_true',
                              help='resume an experiment. '
@@ -25,7 +23,7 @@ class opts(object):
                                   'in the exp dir if load_model is empty.') 
 
     # system
-    self.parser.add_argument('--gpus', default='2, 3',
+    self.parser.add_argument('--gpus', default='0,1',
                              help='-1 for CPU, use comma for multiple gpus')
     self.parser.add_argument('--num_workers', type=int, default=8,
                              help='dataloader threads. 0 for single-thread.')
@@ -35,7 +33,7 @@ class opts(object):
                              help='random seed') # from CornerNet
 
     # log
-    self.parser.add_argument('--print_iter', type=int, default=0, 
+    self.parser.add_argument('--print_iter', type=int, default=5, 
                              help='disable progress bar and print to screen.')
     self.parser.add_argument('--hide_data_time', action='store_true',
                              help='not display time during training.')
@@ -122,7 +120,7 @@ class opts(object):
 
     # mot
     self.parser.add_argument('--data_cfg', type=str,
-                             default='../src/lib/cfg/data.json',
+                             default='src/lib/cfg/data.json',
                              help='load data from cfg')
     self.parser.add_argument('--data_dir', type=str, default='./dataset')
 

@@ -9,8 +9,68 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from PIL import Image
-from torch.cuda import amp
-from dcn_v2 import DCN
+from torch.nn.parameter import Parameter
+from torchvision.ops import deform_conv2d, DeformConv2d
+import torch
+
+
+class DCN(nn.Module):
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride,
+        padding,
+        dilation=1,
+        groups=1,
+        deformable_groups=1,
+        bias=True):
+        super(DCN, self).__init__()
+
+        self.stride=stride
+        self.padding=padding
+        self.dilation=dilation
+        self.bias = bias
+
+        self.weight = Parameter(
+            torch.empty(out_channels, in_channels // groups, kernel_size[0], kernel_size[1])
+        )
+        if bias:
+            self.bias = Parameter(torch.empty(out_channels))
+    
+        channels_ = deformable_groups * 3 * kernel_size[0] * kernel_size[1]
+
+        self.conv_offset_mask = nn.Conv2d(
+            in_channels,
+            channels_,
+            kernel_size=kernel_size,
+            stride=stride,
+            padding=padding,
+            bias=True,
+        )
+
+        self.init_offset()
+
+    def init_offset(self):
+        self.conv_offset_mask.weight.data.zero_()
+        self.conv_offset_mask.bias.data.zero_()
+
+    def forward(self, input):
+        out = self.conv_offset_mask(input)
+        o1, o2, mask = torch.chunk(out, 3, dim=1)
+        offset = torch.cat((o1, o2), dim=1)
+        mask = torch.sigmoid(mask)
+        return deform_conv2d(
+            input,
+            offset,
+            self.weight,
+            bias=self.bias,
+            stride=self.stride,
+            padding=self.padding,
+            dilation=self.dilation,
+            mask=mask,
+        )
 
 
 def autopad(k, p=None):  # kernel, padding
